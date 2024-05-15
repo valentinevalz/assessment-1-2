@@ -1,0 +1,19 @@
+---
+- name: Apply Kubernetes manifests
+  k8s:
+    state: present
+    definition: "{{ item }}"
+  with_items:
+    - "{{ lookup('template', 'deployment.yaml.j2') }}"
+    - "{{ lookup('template', 'service.yaml.j2') }}"
+    - "{{ lookup('template', 'service-monitor.yaml.j2') }}"
+
+ ansible/inventory.ini////by creating inventory file 
+[localhost]
+127.0.0.1
+
+
+RUN 
+ansible-playbook -i ansible/inventory.ini ansible/playbook.yaml
+
+
