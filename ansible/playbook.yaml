@@ -1,0 +1,24 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Build Docker image
+      docker_image:
+        path: "{{ playbook_dir }}/../../"
+        name: my-express-app
+        tag: latest
+
+    - name: Push Docker image
+      docker_image:
+        name: my-express-app
+        tag: latest
+        push: yes
+        source: build
+
+    - name: Deploy to Kubernetes
+      k8s:
+        state: present
+        definition: "{{ item }}"
+      with_items:
+        - "{{ lookup('template', 'roles/deploy/templates/deployment.yaml.j2') }}"
+        - "{{ lookup('template', 'roles/deploy/templates/service.yaml.j2') }}"
+        - "{{ lookup('template', 'roles/deploy/templates/service-monitor.yaml.j2') }}"
